@@ -14,6 +14,31 @@ services:
       - '5432:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data/
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper_c
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - internal
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka_c
+    ports:
+    - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper_c:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_c:9092,PLAINTEXT_INTERNAL://kafka_c:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    networks:
+      - internal
   boot:
     image: maven:3.8.7-openjdk-18
     working_dir: /app
@@ -27,6 +52,7 @@ services:
       - type: bind
         source: ./
         target: /app
+      - mvndata:/root/.m2
     restart: "no"
     #command: mvn spring-boot:run
     command: tail -f /dev/null
@@ -38,4 +64,6 @@ networks:
 
 volumes:
   pgdata:
+    driver: local
+  mvndata:
     driver: local
