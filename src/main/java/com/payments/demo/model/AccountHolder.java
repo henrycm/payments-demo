@@ -1,28 +1,29 @@
 package com.payments.demo.model;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
 public class AccountHolder {
     @Id
-    private long id;
+    private Long id;
     private String name;
 
     public AccountHolder() {
-
     }
 
-    public AccountHolder(long id, String name) {
+    public AccountHolder(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -32,5 +33,10 @@ public class AccountHolder {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
     }
 }

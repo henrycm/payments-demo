@@ -2,35 +2,49 @@ package com.payments.demo.model;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Payment {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique=true)
+    private String clientIdempotentKey;
+
     @Enumerated(EnumType.STRING)
     private Currency currency;
-    private float amount;
-    @ManyToOne
+
+    private Float amount;
+
+    @ManyToOne()
     private AccountHolder originator;
-    @ManyToOne
+
+    @ManyToOne()
     private AccountHolder beneficiary;
-    @ManyToOne
+
+    @ManyToOne()
     private Account sender;
-    @ManyToOne
+
+    @ManyToOne()
     private Account receiver;
+
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -42,7 +56,7 @@ public class Payment {
         this.currency = currency;
     }
 
-    public float getAmount() {
+    public Float getAmount() {
         return amount;
     }
 
@@ -88,6 +102,14 @@ public class Payment {
 
     public void setStatus(PaymentStatus status) {
         this.status = status;
+    }
+
+    public String getClientIdempotentKey() {
+        return clientIdempotentKey;
+    }
+
+    public void setClientIdempotentKey(String clientIdempotentKey) {
+        this.clientIdempotentKey = clientIdempotentKey;
     }
 
     @Override

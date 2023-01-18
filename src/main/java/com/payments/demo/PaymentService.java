@@ -28,14 +28,24 @@ public class PaymentService {
 
     @Transactional
     void create(Payment payment) {
-        LOGGER.info("Creating payment: " + payment);
-        payment.setStatus(PaymentStatus.CREATED);
-        repo.save(payment);
-
-        try {
-            kafkaTemplate.send(kafkaTopicName, objectMapper.writeValueAsString(payment)).get();
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
+        Payment existing = repo.findByClientIdempotentKey(payment.getClientIdempotentKey());
+        if (existing != null) {
+            LOGGER.info("Payment with idempotentKey %s already exists"
+                    .formatted(payment.getClientIdempotentKey()));
+        } else {
+            LOGGER.info("Creating payment: " + payment);
+            payment.setStatus(PaymentStatus.CREATED);
+            repo.save(payment);
+            try {
+                kafkaTemplate.send(kafkaTopicName, objectMapper.writeValueAsString(payment)).get();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         }
+    }
+
+    Payment retrieve(String idempotentKey){
+        LOGGER.info("Retrieving payment: " + idempotentKey);
+        return repo.findByClientIdempotentKey(idempotentKey);
     }
 }
