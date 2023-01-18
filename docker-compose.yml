@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:alpine
+    container_name: pg_c
+    restart: unless-stopped
+    networks:
+      - internal
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=portx
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+  boot:
+    image: maven:3.8.7-openjdk-18
+    working_dir: /app
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+      - "8000:8000"
+    container_name: boot_c
+    volumes:
+      - type: bind
+        source: ./
+        target: /app
+    restart: "no"
+    #command: mvn spring-boot:run
+    command: tail -f /dev/null
+    networks:
+     - internal
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  pgdata:
+    driver: local
