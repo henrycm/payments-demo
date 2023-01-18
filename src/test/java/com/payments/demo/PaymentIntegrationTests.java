@@ -18,13 +18,11 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.payments.demo.model.AccountType;
-import com.payments.demo.model.Beneficiary;
+import com.payments.demo.model.AccountHolder;
 import com.payments.demo.model.Currency;
-import com.payments.demo.model.Originator;
 import com.payments.demo.model.Payment;
 import com.payments.demo.model.PaymentStatus;
-import com.payments.demo.model.Receiver;
-import com.payments.demo.model.Sender;
+import com.payments.demo.model.Account;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class PaymentIntegrationTests {
@@ -43,12 +41,12 @@ public class PaymentIntegrationTests {
     void testPaymentCreated() throws Exception{
         Payment p = new Payment();
         p.setAmount(100);
-        p.setBeneficiary(new Beneficiary(1, "Ben"));
+        p.setBeneficiary(new AccountHolder(1, "Ben"));
         p.setCurrency(Currency.USD);
         p.setId(UUID.randomUUID().toString());
-        p.setOriginator(new Originator(1, "Bob"));
-        p.setReceiver(new Receiver(AccountType.SAVINGS, 1005555551));
-        p.setSender(new Sender(AccountType.SAVINGS, 1005555552));
+        p.setOriginator(new AccountHolder(1, "Bob"));
+        p.setReceiver(new Account(AccountType.SAVINGS, 1005555551));
+        p.setSender(new Account(AccountType.SAVINGS, 1005555552));
         p.setStatus(PaymentStatus.SENT);
 
         LOGGER.info(new ObjectMapper().writeValueAsString(p));

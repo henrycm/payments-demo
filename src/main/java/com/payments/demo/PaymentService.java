@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.payments.demo.model.Payment;
+import com.payments.demo.model.PaymentStatus;
 
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
@@ -19,6 +20,7 @@ public class PaymentService {
     @Transactional
     void create(Payment payment) {
         LOGGER.info("Creating payment " + payment);
+        payment.setStatus(PaymentStatus.CREATED);
         repo.save(payment);
     }
 }

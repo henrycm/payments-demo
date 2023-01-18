@@ -4,16 +4,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
-public class Beneficiary {
+public class AccountHolder {
     @Id
     private long id;
     private String name;
 
-    public Beneficiary() {
+    public AccountHolder() {
 
     }
 
-    public Beneficiary(long id, String name) {
+    public AccountHolder(long id, String name) {
         this.id = id;
         this.name = name;
     }

@@ -16,13 +16,13 @@ public class Payment {
     private Currency currency;
     private float amount;
     @ManyToOne
-    private Originator originator;
+    private AccountHolder originator;
     @ManyToOne
-    private Beneficiary beneficiary;
+    private AccountHolder beneficiary;
     @ManyToOne
-    private Sender sender;
+    private Account sender;
     @ManyToOne
-    private Receiver receiver;
+    private Account receiver;
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
@@ -50,35 +50,35 @@ public class Payment {
         this.amount = amount;
     }
 
-    public Originator getOriginator() {
+    public AccountHolder getOriginator() {
         return originator;
     }
 
-    public void setOriginator(Originator originator) {
+    public void setOriginator(AccountHolder originator) {
         this.originator = originator;
     }
 
-    public Beneficiary getBeneficiary() {
+    public AccountHolder getBeneficiary() {
         return beneficiary;
     }
 
-    public void setBeneficiary(Beneficiary beneficiary) {
+    public void setBeneficiary(AccountHolder beneficiary) {
         this.beneficiary = beneficiary;
     }
 
-    public Sender getSender() {
+    public Account getSender() {
         return sender;
     }
 
-    public void setSender(Sender sender) {
+    public void setSender(Account sender) {
         this.sender = sender;
     }
 
-    public Receiver getReceiver() {
+    public Account getReceiver() {
         return receiver;
     }
 
-    public void setReceiver(Receiver receiver) {
+    public void setReceiver(Account receiver) {
         this.receiver = receiver;
     }
 

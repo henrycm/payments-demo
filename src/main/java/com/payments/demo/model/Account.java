@@ -6,15 +6,15 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 
 @Entity
-public class Sender {
+public class Account {
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
     @Id
     private long accountNumber;
 
-    public Sender(){}
+    public Account(){}
 
-    public Sender(AccountType accountType, long accountNumber) {
+    public Account(AccountType accountType, long accountNumber) {
         this.accountType = accountType;
         this.accountNumber = accountNumber;
     }
