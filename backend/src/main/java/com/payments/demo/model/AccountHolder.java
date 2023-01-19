@@ -4,11 +4,13 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class AccountHolder {
     @Id
     private Long id;
+    @NotNull
     private String name;
 
     public AccountHolder() {

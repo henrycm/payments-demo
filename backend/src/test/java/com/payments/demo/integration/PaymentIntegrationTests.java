@@ -1,4 +1,4 @@
-package com.payments.demo;
+package com.payments.demo.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -6,9 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -17,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.payments.demo.PaymentService;
 import com.payments.demo.model.Account;
 import com.payments.demo.model.AccountHolder;
 import com.payments.demo.model.AccountType;
@@ -24,17 +22,17 @@ import com.payments.demo.model.Currency;
 import com.payments.demo.model.Payment;
 import com.payments.demo.model.PaymentStatus;
 
+import jakarta.annotation.Resource;
+
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class PaymentIntegrationTests {
-    private final static Logger LOGGER = LoggerFactory.getLogger(PaymentIntegrationTests.class);
-
     @Value(value = "${local.server.port}")
     private int port;
 
-    @Autowired
+    @Resource
     private TestRestTemplate restTemplate;
 
-    @Autowired
+    @Resource
     private PaymentService service;
 
     @Test

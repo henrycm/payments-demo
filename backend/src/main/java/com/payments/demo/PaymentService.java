@@ -40,7 +40,7 @@ public class PaymentService {
     String kafkaTopicName;
 
     @Transactional
-    void create(Payment payment) {
+    public void create(Payment payment) {
         Payment existing = paymentRepo.findByClientIdempotentKey(payment.getClientIdempotentKey());
         if (existing != null) {
             LOGGER.info("Payment with idempotentKey %s already exists"
@@ -78,7 +78,7 @@ public class PaymentService {
         }
     }
 
-    Payment retrieve(String idempotentKey) {
+    public Payment retrieve(String idempotentKey) {
         LOGGER.info("Retrieving payment: " + idempotentKey);
         return paymentRepo.findByClientIdempotentKey(idempotentKey);
     }

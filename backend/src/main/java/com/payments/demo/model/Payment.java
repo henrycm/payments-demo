@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Payment {
@@ -18,23 +19,30 @@ public class Payment {
     private Long id;
 
     @Column(unique=true)
+    @NotNull
     private String clientIdempotentKey;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Currency currency;
 
+    @NotNull
     private Float amount;
 
     @ManyToOne()
+    @NotNull
     private AccountHolder originator;
 
     @ManyToOne()
+    @NotNull
     private AccountHolder beneficiary;
 
     @ManyToOne()
+    @NotNull
     private Account sender;
 
     @ManyToOne()
+    @NotNull
     private Account receiver;
 
     @Enumerated(EnumType.STRING)
