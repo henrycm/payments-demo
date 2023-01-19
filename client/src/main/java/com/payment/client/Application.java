@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,19 +21,23 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.payment.client.model.Account;
+import com.payment.client.model.AccountHolder;
+import com.payment.client.model.AccountType;
+import com.payment.client.model.Currency;
+import com.payment.client.model.Payment;
+import com.payment.client.model.PaymentStatus;
+
+import jakarta.annotation.Resource;
 
 @SpringBootApplication
 public class Application implements ApplicationRunner {
-	private static Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
-	@Value(value = "${paymentservice.endpoint}")
-	private String endpoint;
+	@Value(value = "${numPayments:1}")
+	int numPayments = 1;
 
-	@Value(value = "${payload}")
-	private String payload;
-
-	@Value(value = "${numPayments}")
-	private int numPayments = 1;
+	@Resource
+	ClientService service;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -41,29 +45,25 @@ public class Application implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		if(payload == null){
-			LOGGER.error("Expected payload as parameter: --payload='{}'");
+
+		for (long i = 0; i < numPayments; i++) {
+			Payment p = build();
+			p.setAmount(p.getAmount() + i);
+			p.setBeneficiary(new AccountHolder(i, "Ben" + i));
+			p.setReceiver(new Account(AccountType.SAVINGS, 1005555551L + i));
+			service.createPayment(p);
 		}
+	}
 
-		LOGGER.info("Excecuting payments client");
-		for (int i = 0; i < numPayments; i++) {
-			String uuid = UUID.randomUUID().toString();
-			LOGGER.info("Creating payment: " + uuid);
-			ObjectNode node = (ObjectNode) new ObjectMapper().readTree(payload);
-			node.put("clientIdempotentKey", uuid);
-			LOGGER.info(node.toString());
+	private static Payment build() {
+		Payment p = new Payment();
+		p.setAmount(100);
+		p.setCurrency(Currency.USD);
+		p.setClientIdempotentKey(UUID.randomUUID().toString());
+		p.setOriginator(new AccountHolder(1L, "Bob"));
+		p.setSender(new Account(AccountType.SAVINGS, 1005555552L));
+		p.setStatus(PaymentStatus.SENT);
 
-			RestTemplate restTemplate = new RestTemplate();
-			HttpHeaders headers = new HttpHeaders();
-			headers.set("Content-Type", MediaType.APPLICATION_JSON.toString());
-
-			HttpEntity<JsonNode> request = new HttpEntity<JsonNode>(node, headers);
-			ResponseEntity<Void> response = restTemplate.exchange(endpoint, HttpMethod.POST, request, Void.class);
-
-			if (response.getStatusCode() == HttpStatus.ACCEPTED) {
-				LOGGER.info("Payment created:" + node.get("clientIdempotentKey").asText());
-			}
-		}
-
+		return p;
 	}
 }
