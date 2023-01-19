@@ -60,13 +60,13 @@ services:
      - internal
   client:
     image: maven:3.8.7-openjdk-18
-    working_dir: /app
+    working_dir: /app/client
     depends_on:
       - boot
     container_name: client_c
     volumes:
       - type: bind
-        source: ./client
+        source: ./
         target: /app
       - mvndata:/root/.m2
     restart: "no"

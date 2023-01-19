@@ -15,6 +15,15 @@ java -jar target/payment-client-0.0.1.jar --payload="{\"currency\":\"USD\",\"amo
 
 ```
 
+## Running automated tests
+```
+docker exec -it client_c bash
+
+cd ../backend
+
+mvn test
+```
+
 ## Query the payment table
 From the host:
 ```
