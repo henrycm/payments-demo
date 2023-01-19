@@ -50,11 +50,26 @@ services:
     container_name: boot_c
     volumes:
       - type: bind
-        source: ./
+        source: ./backend
         target: /app
       - mvndata:/root/.m2
     restart: "no"
-    #command: mvn spring-boot:run
+    command: mvn spring-boot:run
+    #command: tail -f /dev/null
+    networks:
+     - internal
+  client:
+    image: maven:3.8.7-openjdk-18
+    working_dir: /app
+    depends_on:
+      - boot
+    container_name: client_c
+    volumes:
+      - type: bind
+        source: ./client
+        target: /app
+      - mvndata:/root/.m2
+    restart: "no"
     command: tail -f /dev/null
     networks:
      - internal
