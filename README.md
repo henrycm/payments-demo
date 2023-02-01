@@ -1,3 +1,11 @@
+# About
+Spring boot demo application with stack:
+- Postgres
+- Spring-data
+- Spring REST controllers
+- Kafka
+- Docker composer
+
 ## Running the application
 From the project's root folder run:
 ```
